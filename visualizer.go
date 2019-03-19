@@ -5,8 +5,10 @@ import (
 	"fmt"
 	"log"
 	"math"
+	"os"
 	"reflect"
 	"sync"
+	"syscall"
 	"time"
 	"unsafe"
 
@@ -131,7 +133,7 @@ func (c Config) PosCenterGame() pixel.Vec {
 //  2. Actors; General Actors or HUDs
 //  3. A game-like visualizer system along with vsync/fps/dt/camera
 //
-// Inputs handled by default: ESC, Tab, Enter, Space, Arrows, Mouse input L/R/Wheel
+// Inputs handled by default: ESC, Tab, Enter, Space, Arrows, Left click and Wheeling
 //
 type Visualizer struct { // also called a game
 	// something system, something runtime
@@ -143,7 +145,6 @@ type Visualizer struct { // also called a game
 	vsync  <-chan time.Time // lazy init
 	// game (visualizer) state
 	isTitleChanged bool
-	isScalpelMode  bool
 	// drawings
 	mutex      sync.Mutex // actors must be locked up
 	actors     []Actor
@@ -577,27 +578,25 @@ func (v *Visualizer) _HandleEvents(dt float64) {
 		}
 	}
 
-	// scalpel mode
-	if v.window.JustReleased(pixelgl.MouseButtonRight) {
-		go func() {
-			v.isScalpelMode = !v.isScalpelMode
-		}()
-	}
-	if v.window.JustReleased(pixelgl.MouseButtonLeft) {
-		// ---------------------------------------------------
-		if !jukebox.IsPlaying() {
-			jukebox.Play()
+	// "distracting" music
+	if v.window.JustReleased(pixelgl.KeyM) {
+		if v.window.Pressed(pixelgl.KeyLeftControl) { // because annoying stuff
+			if !jukebox.IsPlaying() {
+				// The purpose of this crappy music: the music works like those beep sounds out of patient monitors.
+				// When it slows down, we at least get an idea that something isn't going quite smoothly.
+				jukebox.Play()
+			}
 		}
+	}
 
-		// ---------------------------------------------------
+	// click or ctrl+click
+	if v.window.JustReleased(pixelgl.MouseButtonLeft) {
 		posWin := v.window.MousePosition()
 		posGame := v.camera.Unproject(posWin)
 		go func() {
 			v.explosions.ExplodeAt(pixel.V(posGame.X, posGame.Y), pixel.V(10, 10))
 		}()
-
-		// ---------------------------------------------------
-		if v.isScalpelMode {
+		if v.window.Pressed(pixelgl.KeyLeftControl) { // because annoying stuff
 			// strTitle := fmt.Sprint(posGame.X, ", ", posGame.Y) //
 			strDlg := fmt.Sprint(
 				"camera angle in degree: ", (v.camera.Angle()/math.Pi)*180, "\r\n", "\r\n",
@@ -607,6 +606,7 @@ func (v *Visualizer) _HandleEvents(dt float64) {
 				"mouse click coords in game pos: ", posGame.X, posGame.Y,
 			)
 			go func() {
+				syscall.Write(syscall.Handle(os.Stdout.Fd()), nil) // this line resolves a syscall bug
 				// v.window.SetTitle(strTitle) //
 				dialog.Message("%s", strDlg).Title("MouseButtonLeft").Info()
 			}()
