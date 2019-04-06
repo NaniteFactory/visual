@@ -12,19 +12,19 @@ import (
 	"time"
 	"unsafe"
 
+	"github.com/faiface/pixel"
+	"github.com/faiface/pixel/pixelgl"
+	"github.com/faiface/pixel/text"
 	glfw "github.com/go-gl/glfw/v3.2/glfw"
+	"github.com/golang/freetype/truetype"
+	"github.com/nanitefactory/bindat/bindatkuji"
 	"github.com/nanitefactory/visual/actors"
 	"github.com/nanitefactory/visual/jukebox"
 	"github.com/nanitefactory/visual/super"
-	"github.com/faiface/pixel"
-	"github.com/faiface/pixel/text"
-	"github.com/golang/freetype/truetype"
-	"github.com/nanitefactory/bindat/bindatkuji"
+	"github.com/sqweek/dialog"
 	"golang.org/x/image/colornames"
 	"golang.org/x/image/font"
 	"golang.org/x/image/font/basicfont"
-	"github.com/faiface/pixel/pixelgl"
-	"github.com/sqweek/dialog"
 )
 
 // -------------------------------------------------------------------------
@@ -460,8 +460,8 @@ var atlasASCII36 = func(size float64) *text.Atlas {
 		}), nil
 	}
 	return text.NewAtlas(func() font.Face {
-		if binTTF, err := bindatkuji.Asset("NanumBarunGothic.ttf"); err != nil {
-			if retFace, err := newTrueTypeFontFaceFromBin(binTTF, size); err != nil {
+		if binTTF, err := bindatkuji.Asset("NanumBarunGothic.ttf"); err == nil {
+			if retFace, err := newTrueTypeFontFaceFromBin(binTTF, size); err == nil {
 				return retFace
 			}
 		}

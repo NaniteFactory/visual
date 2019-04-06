@@ -28,8 +28,8 @@ var atlasASCII18 = func(size float64) *text.Atlas {
 		}), nil
 	}
 	return text.NewAtlas(func() font.Face {
-		if binTTF, err := bindatkuji.Asset("NanumBarunGothic.ttf"); err != nil {
-			if retFace, err := newTrueTypeFontFaceFromBin(binTTF, size); err != nil {
+		if binTTF, err := bindatkuji.Asset("NanumBarunGothic.ttf"); err == nil {
+			if retFace, err := newTrueTypeFontFaceFromBin(binTTF, size); err == nil {
 				return retFace
 			}
 		}
