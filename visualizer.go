@@ -13,15 +13,18 @@ import (
 	"unsafe"
 
 	glfw "github.com/go-gl/glfw/v3.2/glfw"
-	kuji "github.com/nanitefactory/amidakuji/glossary"
 	"github.com/nanitefactory/visual/actors"
 	"github.com/nanitefactory/visual/jukebox"
-
+	"github.com/nanitefactory/visual/super"
 	"github.com/faiface/pixel"
-	"github.com/faiface/pixel/pixelgl"
 	"github.com/faiface/pixel/text"
-	"github.com/sqweek/dialog"
+	"github.com/golang/freetype/truetype"
+	"github.com/nanitefactory/bindat/bindatkuji"
 	"golang.org/x/image/colornames"
+	"golang.org/x/image/font"
+	"golang.org/x/image/font/basicfont"
+	"github.com/faiface/pixel/pixelgl"
+	"github.com/sqweek/dialog"
 )
 
 // -------------------------------------------------------------------------
@@ -139,9 +142,9 @@ type Visualizer struct { // also called a game
 	// something system, something runtime
 	window *pixelgl.Window // lazy init
 	bg     pixel.RGBA
-	camera *kuji.Camera // lazy init
+	camera *super.Camera // lazy init
 	fpsw   *actors.FPSWatch
-	dtw    kuji.DtWatch
+	dtw    super.DtWatch
 	vsync  <-chan time.Time // lazy init
 	// game (visualizer) state
 	isTitleChanged bool
@@ -179,7 +182,7 @@ func NewVisualizer(cfg Config, optionalHUDs []HUD, generalActors ...Actor) *Visu
 	}
 	v := Visualizer{
 		bg:   cfg.Bg,
-		fpsw: actors.NewFPSWatchSimple(pixel.V(cfg.WinWidth, cfg.WinHeight), kuji.Top, kuji.Right),
+		fpsw: actors.NewFPSWatchSimple(pixel.V(cfg.WinWidth, cfg.WinHeight), super.Top, super.Right),
 		actors: func() []Actor { // Actors in game coords. (general actors)
 			ret := make([]Actor, len(generalActors))
 			for i := range generalActors {
@@ -445,6 +448,32 @@ func (v *Visualizer) logPrintln(args ...interface{}) {
 	log.Println(args...)
 }
 
+var atlasASCII36 = func(size float64) *text.Atlas {
+	newTrueTypeFontFaceFromBin := func(bytes []byte, size float64) (font.Face, error) {
+		font, err := truetype.Parse(bytes)
+		if err != nil {
+			return nil, err
+		}
+		return truetype.NewFace(font, &truetype.Options{
+			Size:              size,
+			GlyphCacheEntries: 1,
+		}), nil
+	}
+	return text.NewAtlas(func() font.Face {
+		if binTTF, err := bindatkuji.Asset("NanumBarunGothic.ttf"); err != nil {
+			if retFace, err := newTrueTypeFontFaceFromBin(binTTF, size); err != nil {
+				return retFace
+			}
+		}
+		return basicfont.Face7x13
+	}(), text.ASCII, nil)
+}(36)
+
+// AtlasASCII36 returns an atlas of font size 36 that's to draw only ASCII characters.
+func AtlasASCII36() *text.Atlas {
+	return atlasASCII36
+}
+
 // -------------------------------------------------------------------------
 // Read only getter method(s)
 
@@ -494,7 +523,7 @@ func (v *Visualizer) _RunLazyInit() {
 
 	// lazy init vars
 	v.window = win
-	v.camera = kuji.NewCamera(pixel.V(v.width/2, v.height/2), v.window.Bounds())
+	v.camera = super.NewCamera(pixel.V(v.width/2, v.height/2), v.window.Bounds())
 
 	// register callback
 	windowGL := v._WindowDeep()
@@ -519,7 +548,7 @@ func (v *Visualizer) _RunLazyInit() {
 	// so-called loading
 	{
 		v.window.Clear(colornames.Brown)
-		txt := text.New(v.window.Bounds().Center() /* screenCenter */, kuji.NewAtlas("", 36, nil))
+		txt := text.New(v.window.Bounds().Center() /* screenCenter */, AtlasASCII36())
 		txt.WriteString("Loading...")
 		txt.Draw(v.window, pixel.IM)
 		v.window.Update()

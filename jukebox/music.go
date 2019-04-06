@@ -7,11 +7,10 @@ import (
 	"sync"
 	"time"
 
-	kuji "github.com/nanitefactory/amidakuji/glossary"
-
 	"github.com/faiface/beep"
 	"github.com/faiface/beep/speaker"
 	"github.com/faiface/beep/vorbis"
+	"github.com/nanitefactory/bindat/bindatkuji"
 )
 
 // -------------------------------------------------------------------------
@@ -111,7 +110,7 @@ func Finalize() error {
 
 // NewMusicFromAsset is a constructor.
 func _NewMusicFromAsset(nameMusic, nameAsset string) *_Music {
-	asset, err := kuji.Asset(nameAsset)
+	asset, err := bindatkuji.Asset(nameAsset)
 	if err != nil {
 		// log.Fatal(err) //
 	}

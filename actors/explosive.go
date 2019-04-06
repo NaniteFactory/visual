@@ -4,18 +4,18 @@ import (
 	"image/color"
 
 	"github.com/faiface/pixel"
-	kuji "github.com/nanitefactory/amidakuji/glossary"
+	"github.com/nanitefactory/visual/super"
 )
 
 // Explosions implements Actor interface.
 type Explosions struct {
-	*kuji.Explosions
+	*super.Explosions
 }
 
 // NewExplosions is a constructor.
 // The 3rd argument colors can be nil. Then it will use its default value of a color set.
 func NewExplosions(width, height float64, colors []color.Color, precision int) *Explosions {
-	parent := kuji.NewExplosions(width, height, colors, precision)
+	parent := super.NewExplosions(width, height, colors, precision)
 	return &Explosions{parent}
 }
 
