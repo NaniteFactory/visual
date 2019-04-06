@@ -2,10 +2,7 @@ package visual
 
 import (
 	"github.com/faiface/pixel/text"
-	"github.com/golang/freetype/truetype"
-	"github.com/nanitefactory/bindat/bindatkuji"
-	"golang.org/x/image/font"
-	"golang.org/x/image/font/basicfont"
+	"github.com/nanitefactory/visual/atlas"
 )
 
 // AtlasASCII36 returns an atlas of font size 36 that's to draw only ASCII characters.
