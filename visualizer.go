@@ -522,7 +522,7 @@ func (v *Visualizer) _RunLazyInit() {
 	// so-called loading
 	{
 		v.window.Clear(colornames.Brown)
-		txt := text.New(v.window.Bounds().Center() /* screenCenter */, AtlasASCII36())
+		txt := text.New(v.window.Bounds().Center() /* screenCenter */, AtlasASCII36)
 		txt.WriteString("Loading...")
 		txt.Draw(v.window, pixel.IM)
 		v.window.Update()
