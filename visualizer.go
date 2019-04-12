@@ -33,13 +33,13 @@ func init() {
 // HUD is an Actor positioned in screen-coord.
 type HUD interface {
 	Actor
-	PosOnScreen(width, height float64)
+	PosOnScreen(width, height float64) // Callback on screen resize from mainthread.
 }
 
 // Actor is what a Visualizer visualizes.
 // Actor updates and draws itself. It acts as a game (virtual) object.
 //
-// The main-thread, called Visualizer,
+// The mainthread, called Visualizer,
 // will do what's shown below, every single frame.
 //
 // func (v *Visualizer) _NextFrame(dt float64) {
@@ -66,7 +66,7 @@ type Actor interface {
 
 // Drawer draws itself on a target canvas.
 //
-// The main-thread will do what's shown below every single frame.
+// The mainthread will do what's shown below every single frame.
 //
 // // Canvas a game (virtual) world
 // t.SetMatrix(v.camera.Transform())
@@ -77,13 +77,13 @@ type Actor interface {
 // }
 //
 type Drawer interface {
-	// Draw obligatorily invoked by Visualizer on main thread.
+	// Draw obligatorily invoked by Visualizer on mainthread.
 	Draw(t pixel.Target)
 }
 
-// Updater updates itself with the delta time given, every frame on main-thread.
+// Updater updates itself with the delta time given, every frame on mainthread.
 //
-// The main-thread will do what's shown below every single frame.
+// The mainthread will do what's shown below every single frame.
 //
 // // For all actors, Update() in an order.
 // for i := range v.actors {
@@ -91,7 +91,7 @@ type Drawer interface {
 // }
 //
 type Updater interface {
-	// Update obligatorily invoked by Visualizer on main thread.
+	// Update obligatorily invoked by Visualizer on mainthread.
 	Update(dt float64)
 }
 
@@ -129,7 +129,7 @@ func (c Config) PosCenterGame() pixel.Vec {
 // -------------------------------------------------------------------------
 // Visualizer
 
-// Visualizer is a main-thread that visualizes stuff.
+// Visualizer is a mainthread that visualizes stuff.
 //
 // Visualizer manages:
 //  1. A window
@@ -458,9 +458,9 @@ func (v *Visualizer) _WindowDeep() (baseWindow *glfw.Window) {
 }
 
 // -------------------------------------------------------------------------
-// Run on main thread - EP
+// Run on mainthread - EP
 
-// Run the game window and its event loop on main-thread.
+// Run the game window and its event loop on mainthread.
 // This function must be called from the main function of an
 // application so that it can work on the context of OpenGL.
 func (v *Visualizer) Run() {
@@ -538,8 +538,8 @@ func (v *Visualizer) _RunLazyInit() {
 }
 
 func (v *Visualizer) _RunEventLoop() {
-	for v.window.Closed() != true { // Your average event loop in main thread.
-		// Notice that all function calls as go routine are non-blocking, but the others will block the main thread.
+	for v.window.Closed() != true { // Your average event loop in mainthread.
+		// Notice that all function calls as go routine are non-blocking, but the others will block the mainthread.
 
 		// ---------------------------------------------------
 		// 0. dt
@@ -557,7 +557,7 @@ func (v *Visualizer) _RunEventLoop() {
 } // func
 
 func (v *Visualizer) _HandleEvents(dt float64) {
-	// Notice that all function calls as go routine are non-blocking, but the others will block the main thread.
+	// Notice that all function calls as go routine are non-blocking, but the others will block the mainthread.
 
 	// custom event handler
 	if v.onHandlingEvents != nil {
