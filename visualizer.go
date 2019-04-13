@@ -43,22 +43,22 @@ type HUD interface {
 // The mainthread, called Visualizer,
 // will do what's shown below, every single frame.
 //
-//  func (v *Visualizer) _NextFrame(dt float64) {
-// 		// ---------------------------------------------------
-// 		// 1. update - calc state of game (virtual) objects each frame
-// 		v._Update(dt)
-// 		v.fpsw.Poll()
+//	func (v *Visualizer) _NextFrame(dt float64) {
+//		// ---------------------------------------------------
+//		// 1. update - calc state of game (virtual) objects each frame
+//		v._Update(dt)
+//		v.fpsw.Poll()
 //
-// 		// ---------------------------------------------------
-// 		// 2. draw on window
-// 		v.window.Clear(v.bg) // clear canvas
-// 		v._Draw()            // then draw
+//		// ---------------------------------------------------
+//		// 2. draw on window
+//		v.window.Clear(v.bg) // clear canvas
+//		v._Draw()            // then draw
 //
-// 		// ---------------------------------------------------
-// 		// 3. update window - always end with it
-// 		v.window.Update()
-// 		<-v.vsync
-// 	}
+//		// ---------------------------------------------------
+//		// 3. update window - always end with it
+//		v.window.Update()
+//		<-v.vsync
+//	}
 //
 type Actor interface {
 	Drawer
@@ -69,13 +69,13 @@ type Actor interface {
 //
 // The mainthread will do what's shown below every single frame.
 //
-// 	// Canvas a game (virtual) world
-// 	t.SetMatrix(v.camera.Transform())
+//	// Canvas a game (virtual) world
+//	t.SetMatrix(v.camera.Transform())
 //
-// 	// For all actors, Draw() in an order.
-// 	for i := range v.actors {
-// 		v.actors[i].Draw(t)
-// 	}
+//	// For all actors, Draw() in an order.
+//	for i := range v.actors {
+//		v.actors[i].Draw(t)
+//	}
 //
 type Drawer interface {
 	// Draw obligatorily invoked by Visualizer on mainthread.
@@ -86,10 +86,10 @@ type Drawer interface {
 //
 // The mainthread will do what's shown below every single frame.
 //
-// 	// For all actors, Update() in an order.
-// 	for i := range v.actors {
-// 		v.actors[i].Update(dt)
-// 	}
+//	// For all actors, Update() in an order.
+//	for i := range v.actors {
+//		v.actors[i].Update(dt)
+//	}
 //
 type Updater interface {
 	// Update obligatorily invoked by Visualizer on mainthread.
