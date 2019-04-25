@@ -312,6 +312,11 @@ func (v *Visualizer) Resume() {
 	}
 }
 
+// Close this visualizer. This function breaks the run loop of this.
+func (v *Visualizer) Close() {
+	v.window.SetClosed(true)
+}
+
 // Title gets the title and the version be displayed in the title bar.
 func (v *Visualizer) Title() (fullname, title, version string) {
 	fullname = v.title + "  (" + v.version + ")" // What's written or what's going to be written in the title bar.
