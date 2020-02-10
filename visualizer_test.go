@@ -1,6 +1,7 @@
 package visual
 
 import (
+	"flag"
 	"testing"
 	"time"
 
@@ -9,6 +10,15 @@ import (
 )
 
 func TestMain(*testing.M) {
+	{
+		var bFlagHeadless = false
+		flag.BoolVar(&bFlagHeadless, "headless", false, "If set to true, the test runs in non-windowed mode.")
+		flag.Parse()
+		if bFlagHeadless {
+			return
+		}
+	}
+
 	visualizer := NewVisualizer(
 		Config{
 			Bg:                  pixel.ToRGBA(colornames.Coral),
