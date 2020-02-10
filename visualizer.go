@@ -25,7 +25,7 @@ import (
 )
 
 func init() {
-	fmt.Print() // The standard out is flushed.
+	fmt.Print() // The standard out is flushed. (This is to prevent bugs regarding windows syscalls.)
 }
 
 // -------------------------------------------------------------------------
