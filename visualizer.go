@@ -25,7 +25,9 @@ import (
 )
 
 func init() {
-	syscall.Write(syscall.Handle(os.Stdout.Fd()), nil) // The standard out is flushed.
+	if runtime.GOOS == "windows" {
+		syscall.Write(syscall.Handle(os.Stdout.Fd()), nil) // The standard out is flushed.
+	}
 }
 
 // -------------------------------------------------------------------------
