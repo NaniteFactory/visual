@@ -43,4 +43,4 @@ before_install:
 install:
   - go get -t -v ./...
 script:
-  - go test -v -headless
+  #- go test -v -headless
