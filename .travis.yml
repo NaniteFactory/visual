@@ -39,9 +39,6 @@ go:
 # services:
 #   - docker
 before_install:
-  - "export DISPLAY=:99.0"
-  - "sh -e /etc/init.d/xvfb start"
-  #
   - cd $HOME
   - mv $GOPATH/src/github.com/NaniteFactory $GOPATH/src/github.com/nanitefactory # lowercase 
   - cd $GOPATH/src/github.com/nanitefactory/visual
@@ -49,3 +46,4 @@ install:
   - go get -t -v ./...
 script:
   - go test -v -headless
+  - go test -v
