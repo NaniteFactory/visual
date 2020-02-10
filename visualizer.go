@@ -6,10 +6,8 @@ import (
 	"fmt"
 	"log"
 	"math"
-	"os"
 	"reflect"
 	"sync"
-	"syscall"
 	"time"
 	"unsafe"
 
@@ -25,7 +23,7 @@ import (
 )
 
 func init() {
-	fmt.Print() // The standard out is flushed. (This is to prevent bugs regarding windows syscalls.)
+	fmt.Println() // The standard out is flushed. (This is to prevent bugs regarding windows syscalls.)
 }
 
 // -------------------------------------------------------------------------
@@ -615,7 +613,7 @@ func (v *Visualizer) _HandleEvents(dt float64) {
 				"mouse click coords in game pos: ", posGame.X, posGame.Y,
 			)
 			go func() {
-				syscall.Write(syscall.Handle(os.Stdout.Fd()), nil) // this line resolves a syscall bug
+				fmt.Println() // this line resolves a syscall bug
 				// v.window.SetTitle(strTitle) //
 				dialog.Message("%s", strDlg).Title("MouseButtonLeft").Info()
 			}()
